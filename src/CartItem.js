@@ -4,21 +4,34 @@ class CartItem extends React.Component {
   constructor() {
     super();
     this.state = {
-        price: 999,
-        title: 'Mobile Phone',
-        qty: 1,
-        img: ''
-    }
+      price: 999,
+      title: "Mobile Phone",
+      qty: 1,
+      img: "",
+    };
 
     // this.increaseQuantity = this.increaseQuantity.bind(this)
   }
 
   increaseQuantity = () => {
-    console.log(this.state)
-  }
+    // this.state.qty += 1;
+    // console.log(this.state);
+
+    // set state form 1 (when previous state is not required use this method)
+    /* this.setState({
+      qty: this.state.qty + 1
+    }); */
+
+    // set state form 2 (when previous state is required use this method)
+    this.setState((prevState) => {
+      return {
+        qty: prevState.qty + 1
+      }
+    });
+  };
 
   render() {
-    const {price, title, qty} = this.state;
+    const { price, title, qty } = this.state;
     return (
       <div className="cart-item">
         <div className="left-block">
