@@ -8,8 +8,8 @@ class CartItem extends React.Component {
       title: "Mobile Phone",
       qty: 1,
       img: "",
+      number: 1,
     };
-
     // this.increaseQuantity = this.increaseQuantity.bind(this)
   }
 
@@ -25,8 +25,21 @@ class CartItem extends React.Component {
     // set state form 2 (when previous state is required use this method)
     this.setState((prevState) => {
       return {
-        qty: prevState.qty + 1
-      }
+        qty: prevState.qty + 1,
+      };
+    });
+  };
+
+  decreaseQuantity = () => {
+    const { qty } = this.state; // destructuring
+
+    if (qty === 0) {
+      return;
+    }
+    this.setState((prevState) => {
+      return {
+        qty: prevState.qty - 1,
+      };
     });
   };
 
@@ -53,11 +66,13 @@ class CartItem extends React.Component {
               src="https://cdn-icons-png.flaticon.com/512/1828/1828906.png"
               alt="decrease"
               className="action-icons"
+              onClick={this.decreaseQuantity}
             />
             <img
               src="https://cdn-icons-png.flaticon.com/512/3096/3096673.png"
               alt="delete"
               className="action-icons"
+              onClick={this.handleClick}
             />
           </div>
         </div>
