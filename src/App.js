@@ -9,7 +9,10 @@ import {
   onSnapshot,
   setDoc,
   doc,
+  where,
   addDoc,
+  deleteDoc,
+  orderBy,
 } from "firebase/firestore";
 import { app } from "./index";
 
@@ -41,7 +44,11 @@ class App extends React.Component {
     }); */
 
     // const db = getFirestore(app);
-    const q = query(collection(this.db, "products"));
+    const q = query(
+      collection(this.db, "products"),
+      // where("price", "==", 999), where("title", "==" , "Mouse")
+      orderBy("price")
+    );
 
     const querySnapshot = await getDocs(q);
 
@@ -62,11 +69,27 @@ class App extends React.Component {
   handleIncreaseQuantity = (product) => {
     const { products } = this.state;
     const index = products.indexOf(product);
-    products[index].qty += 1;
+    // products[index].qty += 1;
 
-    this.setState({
-      products,
-    });
+    // this.setState({
+    //   products,
+    // });
+
+    const docRef = doc(this.db, "products", products[index].id);
+
+    setDoc(
+      docRef,
+      {
+        qty: products[index].qty + 1,
+      },
+      {
+        merge: true,
+      }
+    )
+      .then(() => console.log("quantity increased by 1"))
+      .catch((error) => {
+        console.log("Error:", error);
+      });
   };
 
   handleDecreaseQuantity = (product) => {
@@ -77,21 +100,45 @@ class App extends React.Component {
       return;
     }
 
-    products[index].qty -= 1;
+    // products[index].qty -= 1;
 
-    this.setState({
-      products,
-    });
+    // this.setState({
+    //   products,
+    // });
+
+    const docRef = doc(this.db, "products", products[index].id);
+
+    setDoc(
+      docRef,
+      {
+        qty: products[index].qty - 1,
+      },
+      {
+        merge: true,
+      }
+    )
+      .then(() => console.log("quantity decreased by 1"))
+      .catch((error) => {
+        console.log("Error:", error);
+      });
   };
 
   handleDeleteProduct = (id) => {
     const { products } = this.state;
 
-    const items = products.filter((item) => item.id !== id);
+    // const items = products.filter((item) => item.id !== id);
 
-    this.setState({
-      products: items,
-    });
+    // this.setState({
+    //   products: items,
+    // });
+
+    const docRef = doc(this.db, "products", id);
+
+    deleteDoc(docRef)
+      .then(() => console.log("deleted successfully"))
+      .catch((error) => {
+        console.log("Error:", error);
+      });
   };
 
   getCartCount = () => {
@@ -135,7 +182,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Navbar count={this.getCartCount()} />
-        <button onClick={this.addProduct}>Add a product</button>
+        {/* <button onClick={this.addProduct}>Add a product</button> */}
         <Cart
           products={products}
           onIncreaseQuantity={this.handleIncreaseQuantity}
