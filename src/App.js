@@ -1,7 +1,13 @@
 import React from "react";
 import Cart from "./Cart";
 import Navbar from "./Navbar";
-import { getFirestore, collection, getDocs, query } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
 import { app } from "./index";
 
 class App extends React.Component {
@@ -14,7 +20,7 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    const db = getFirestore(app);
+    /* const db = getFirestore(app);
     const q = query(collection(db, "products"));
 
     const querySnapshot = await getDocs(q);
@@ -28,6 +34,24 @@ class App extends React.Component {
     this.setState({
       products,
       loading: false,
+    }); */
+
+    const db = getFirestore(app);
+    const q = query(collection(db, "products"));
+
+    const querySnapshot = await getDocs(q);
+
+    onSnapshot(q, (querySnapshot) => {
+      const products = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        data["id"] = doc.id;
+        return data;
+      });
+
+      this.setState({
+        products,
+        loading: false,
+      });
     });
   }
 
