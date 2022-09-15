@@ -7,6 +7,9 @@ import {
   getDocs,
   query,
   onSnapshot,
+  setDoc,
+  doc,
+  addDoc,
 } from "firebase/firestore";
 import { app } from "./index";
 
@@ -17,6 +20,7 @@ class App extends React.Component {
       products: [],
       loading: true,
     };
+    this.db = getFirestore(app);
   }
 
   async componentDidMount() {
@@ -36,8 +40,8 @@ class App extends React.Component {
       loading: false,
     }); */
 
-    const db = getFirestore(app);
-    const q = query(collection(db, "products"));
+    // const db = getFirestore(app);
+    const q = query(collection(this.db, "products"));
 
     const querySnapshot = await getDocs(q);
 
@@ -116,11 +120,22 @@ class App extends React.Component {
     return cartTotal;
   };
 
+  // add product
+  addProduct = async () => {
+    await addDoc(collection(this.db, "products"), {
+      title: "Wasching machine",
+      img: " ",
+      price: 23487,
+      qty: 2,
+    });
+  };
+
   render() {
     const { products, loading } = this.state;
     return (
       <div className="App">
         <Navbar count={this.getCartCount()} />
+        <button onClick={this.addProduct}>Add a product</button>
         <Cart
           products={products}
           onIncreaseQuantity={this.handleIncreaseQuantity}
